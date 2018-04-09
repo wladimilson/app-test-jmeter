@@ -99,3 +99,11 @@ ClientBin/
 *.publishsettings
 node_modules/
 orleans.codegen.cs
+
+#Cake
+build.sh
+build.cake
+/tools
+
+#Upload images
+/wwwroot/images/avatar/*

@@ -46,6 +46,9 @@ namespace app_test_jmeter.Controllers
 
             var user = await _context.AdmUsers
                 .SingleOrDefaultAsync(m => m.Id == id);
+
+            user.Password = new String('*', user.Password.Length);
+            
             if (user == null)
             {
                 return NotFound();

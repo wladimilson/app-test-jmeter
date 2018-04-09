@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace app_test_jmeter.Models
 {
@@ -16,6 +17,7 @@ namespace app_test_jmeter.Models
        public string Username { get; set; }
 
        [DisplayName("Senha: ")]
+       [DataType(DataType.Password)]
        public string Password { get; set; }
 
        [DisplayName("Avatar: ")]
