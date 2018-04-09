@@ -1,0 +1,45 @@
+@model IEnumerable<app_test_jmeter.Models.User>
+
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<h2>Usuários cadastrados</h2>
+
+<p>
+    <a asp-action="Create">Adicionar um novo usuário!</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    Nome
+                </th>
+                <th>
+                    Idade
+                </th>
+                <th>
+                    Avatar
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                <img src="/@ViewBag.filePath/@item.PerfilImage" width="50px" height="50px" />
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
