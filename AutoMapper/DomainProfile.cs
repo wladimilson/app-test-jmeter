@@ -9,7 +9,8 @@ namespace app_test_jmeter.AutoMapper
         public DomainProfile()
         {
             CreateMap<User, UserViewModel>()
-                .ForMember(d => d.PerfilImage, opt => opt.MapFrom(src => src.PerfilImage));
+                .ForMember(d => d.Filename, opt => opt.MapFrom(src => src.PerfilImage))
+                .ForMember(d => d.PerfilImage, opt => opt.Ignore());
 
             CreateMap<UserViewModel,User>()
                 .ForMember(d => d.PerfilImage, opt => opt.MapFrom(src => src.PerfilImage.FileName));

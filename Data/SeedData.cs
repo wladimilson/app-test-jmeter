@@ -1,20 +1,26 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using app_test_jmeter.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace app_test_jmeter.Data
 {
     public class SeedData: ISeedData
     {
-        private const string _adminRoleName = "admin";
-        private string _adminEmail;
-        private string _adminPassword;
+        private struct User {
+            public string Email { get; set; }
+            public string Password { get; set; }
+            public string Role { get;set; }
+        }
 
-        private string[] _defaultRoles = new string[] { _adminRoleName, "user" };
+        private List<User> Users { get; set; }
+
+        private string[] _defaultRoles = new string[] { "admin", "user" };
 
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,9 +38,24 @@ namespace app_test_jmeter.Data
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            
+            Users = new List<User>();
 
-            _adminEmail = config.GetValue<string>("Admin:Email");
-            _adminPassword = config.GetValue<string>("Admin:Password");
+            Users.Add(new User { 
+                        Email = config.GetValue<string>("Admin:Email"), 
+                        Password = config.GetValue<string>("Admin:Password"),
+                        Role = "admin"
+            });
+
+            foreach(var aluno in config.GetSection("Alunos").GetChildren())
+            {
+                Users.Add(new User { 
+                            Email = aluno.GetValue<string>("Aluno:Email"), 
+                            Password = aluno.GetValue<string>("Aluno:Password"),
+                            Role = "user"
+                });
+            }
+
         }
 
         public async Task Initialize()
@@ -56,19 +77,21 @@ namespace app_test_jmeter.Data
 
         public async Task EnsureDefaultUser()
         {
-            var adminUsers = await _userManager.GetUsersInRoleAsync(_adminRoleName);
+            foreach(var user in Users) {
+                var usr = await _userManager.FindByEmailAsync(user.Email);
 
-            if (!adminUsers.Any())
-            {
-                var adminUser = new ApplicationUser()
+                if (usr == null)
                 {
-                    Id = Guid.NewGuid(),
-                    Email = _adminEmail,
-                    UserName = _adminEmail
-                };
+                    var appUsr = new ApplicationUser()
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = user.Email,
+                        UserName = user.Email
+                    };
 
-                var result = await _userManager.CreateAsync(adminUser, _adminPassword);
-                await _userManager.AddToRoleAsync(adminUser, _adminRoleName);
+                    var result = await _userManager.CreateAsync(appUsr, user.Password);
+                    await _userManager.AddToRoleAsync(appUsr, user.Role);
+                }
             }
         }
     }

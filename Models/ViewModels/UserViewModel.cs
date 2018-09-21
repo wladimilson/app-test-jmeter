@@ -19,6 +19,9 @@ namespace app_test_jmeter.Models.ViewModels
        [DisplayName("Senha: ")]
        public string Password { get; set; }
 
+       [DisplayName("Imagem: ")]
+       public string Filename { get; set; }
+
        [DisplayName("Avatar: ")]
        public IFormFile PerfilImage { get; set; }
     }

@@ -23,6 +23,7 @@ namespace app_test_jmeter.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Email,Password")] LoginViewModel model, string returnurl = null)
         {
 
@@ -33,7 +34,7 @@ namespace app_test_jmeter.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    if (Url.IsLocalUrl(returnurl))
+                    if (Url.IsLocalUrl(returnurl) && returnurl.Trim().Length > 0)
                         return Redirect(returnurl);
                     else
                         return RedirectToAction("Index", "Home");

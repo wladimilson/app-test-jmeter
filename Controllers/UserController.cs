@@ -88,13 +88,21 @@ namespace app_test_jmeter.Controllers
             return View(userViewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Download(string PerfilImage)
+        [HttpGet]
+        public async Task<IActionResult> Download(int? id)
         {
-            if (PerfilImage == null)
-                return Content("Filename not present");
+            if (id == null)
+                return NotFound();
 
-            var path = Path.Combine(filePath, PerfilImage);
+            var user = await _context.AdmUsers
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            user.Password = new String('*', user.Password.Length);
+            
+            if (user == null)
+                return NotFound();
+
+            var path = Path.Combine(filePath, user.PerfilImage);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
@@ -103,6 +111,52 @@ namespace app_test_jmeter.Controllers
             }
             memory.Position = 0;
             return File(memory, GetContentType(path), Path.GetFileName(path));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.AdmUsers
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            user.Password = new String('*', user.Password.Length);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.filePath = Path.Combine("images", "avatar");
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+
+            return View(userViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([Bind("Id,PerfilImage")] UserViewModel userViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                //var user = _mapper.Map<User>(userViewModel);
+
+                if(await saveFileAsync(userViewModel.PerfilImage)){
+                    var user = await _context.AdmUsers
+                            .SingleOrDefaultAsync(m => m.Id == userViewModel.Id);
+                    user.PerfilImage = userViewModel.PerfilImage.FileName;
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                    ModelState.AddModelError("PerfilImage", "Arquivo não salvo");
+
+            }
+            return View(userViewModel);
         }
 
         private string GetContentType(string path)

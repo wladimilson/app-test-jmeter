@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using app_test_jmeter.Models;
+using app_test_jmeter.Models.ViewModels;
 
 namespace app_test_jmeter.Controllers
 {
@@ -13,6 +14,16 @@ namespace app_test_jmeter.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Formulario(){
+            return View(new PessoaViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Formulario(PessoaViewModel pesssoa){
+            return View("Resultado", pesssoa);
         }
 
         public IActionResult Error()

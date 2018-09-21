@@ -77,6 +77,12 @@ namespace app_test_jmeter
                 );
 
                 routes.MapRoute(
+                    name: "formulario-route",
+                    template: "formulario",
+                    defaults: new { controller = "Home", action = "Formulario" }
+                );
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });

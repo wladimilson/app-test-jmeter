@@ -18,7 +18,7 @@
         </div>
     }
     <div class="col-md-6 col-md-offset-3">
-        <form  action="/login?returnurl=@ViewData["returnurl"]" method="POST">  
+        <form  action="/login?returnurl=@ViewData["returnurl"]" asp-antiforgery="true" method="POST">  
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label">E-mail</label>

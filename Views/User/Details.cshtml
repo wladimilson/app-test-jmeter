@@ -38,11 +38,11 @@
             @Html.DisplayNameFor(model => model.PerfilImage)
         </dt>
         <dd>
-            <img src="/@ViewBag.filePath/@Model.PerfilImage" width="50px" height="50px" />
-            <form asp-area="" asp-controller="User" asp-action="Download" method="post" id="downloadForm">
-                @Html.HiddenFor(model => model.PerfilImage)
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Baixar</button>
-            </form>
+            <p>
+                <img src="/@ViewBag.filePath/@Model.PerfilImage" width="50px" height="50px" />
+                <a asp-action="Edit" asp-route-id="@Model.Id">Alterar</a>
+            </p>
+            <a asp-action="Download" asp-route-id="@Model.Id">Baixar</a>
         </dd>
     </dl>
 </div>
