@@ -14,10 +14,10 @@ namespace app_test_jmeter
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(
                 (WebHostBuilderContext context, IConfigurationBuilder builder) =>
@@ -29,7 +29,20 @@ namespace app_test_jmeter
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"hiddenSettings.json", optional: false, reloadOnChange: true);
                 })
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
+        // public static IWebHost BuildWebHost(string[] args) =>
+        //     WebHost.CreateDefaultBuilder(args)
+        //         .ConfigureAppConfiguration(
+        //         (WebHostBuilderContext context, IConfigurationBuilder builder) =>
+        //         {
+        //             builder.Sources.Clear();
+    
+        //             builder
+        //                 .AddEnvironmentVariables()
+        //                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        //                 .AddJsonFile($"hiddenSettings.json", optional: false, reloadOnChange: true);
+        //         })
+        //         .UseStartup<Startup>()
+        //         .Build();
     }
 }

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using app_test_jmeter.AutoMapper;
 using app_test_jmeter.Data;
 using app_test_jmeter.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +29,7 @@ namespace app_test_jmeter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc((config) => config.EnableEndpointRouting = false);
 
             services.AddDbContext<AdmContext>(options => 
                 //Create hiddenSettings.json with the connection string
@@ -49,11 +52,11 @@ namespace app_test_jmeter
             services.AddSingleton <IConfiguration> (Configuration);
             services.AddTransient<ISeedData, SeedData>();
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(DomainProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -67,6 +70,8 @@ namespace app_test_jmeter
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
